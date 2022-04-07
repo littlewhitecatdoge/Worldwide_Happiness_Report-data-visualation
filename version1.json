@@ -1,0 +1,59 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "vconcat": [
+      {
+        "hconcat": [
+          {
+            "width": 700,
+            "height": 700,
+            "data": {
+              "name": "globaldata",
+              "url": "https://raw.githubusercontent.com/littlewhitecatdoge/Worldwide_Happiness_Report-data-visualation/littlewhitecatdoge/data/Wordwide_Happiness_Report_clean_data.csv",
+              "format": {"type": "csv"}
+            },
+            "mark": {"type": "geoshape", "stroke": "black", "tooltip": true},
+            "params": [
+              {
+                "name": "vyear",
+                "value": [{"year": 2015}],
+                "select": {"type": "point", "fields": ["year"]},
+                "bind": {
+                  "name": "Year",
+                  "input": "range",
+                  "min": 2015,
+                  "max": 2019,
+                  "step": 1
+                }
+              }
+            ],
+            "transform": [
+              {"filter":{"param": "vyear"}},
+              {"filter":{"field": "year","range":[2015,2019]}},
+              {
+                "lookup": "Country or region",
+                "from": {
+                  "data": {
+                    "url": "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json",
+                    "format": {"type": "topojson", "feature": "countries"}
+                  },
+                  "key": "properties.name"},
+                  "as":"geo"
+                
+              }
+            ],
+            "encoding": {
+              "shape":{
+                "field":"geo",
+                "type": "geojson"
+              },
+              "color": {
+                "field": "Score",
+                "type": "quantitative",
+                "scale": {"scheme": "greens", "reverse": true,"domain":[2.6,7.8]}
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
