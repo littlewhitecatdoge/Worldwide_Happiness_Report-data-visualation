@@ -50,7 +50,13 @@
                 "field": "Score",
                 "type": "quantitative",
                 "scale": {"scheme": "greens", "reverse": true,"domain":[2.6,7.8]}
-              }
+              },
+              "tooltip": [
+                {"field": "Country or region"},
+                {"field": "Score"},
+                {"field": "Rank"},
+                {"field": "year"}
+              ]
             }
           }
         ]
