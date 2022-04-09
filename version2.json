@@ -1,0 +1,144 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "data": {
+      "name": "globaldata",
+      "url": "https://raw.githubusercontent.com/littlewhitecatdoge/Worldwide_Happiness_Report-data-visualation/littlewhitecatdoge/data/Wordwide_Happiness_Report_clean_data.csv",
+      "format": {"type": "csv"}
+    },
+    "vconcat": [
+      {
+        "hconcat": [
+          {
+            "width": 100,
+            "height": 250,
+            "mark": {"type":"bar","height":10},
+            "encoding": {
+              "y": {"field": "States", "type": "nominal", "sort": "-x"},
+              "x": {
+                "field": "averageScore",
+                "type": "quantitative",
+                "bandPosition": 1
+              },
+              "color": {
+                "condition": {"param": "point", "type": "nominal"},
+                "value": "grey"
+              }
+            },
+            "params": [
+              {
+                "name": "point",
+                "select": {
+                  "type": "point",
+                  "encodings": ["y"],
+                  "resolve": "global"
+                }
+              }
+            ],
+            "transform": [
+              {"filter": {"param": "vyear"}},
+              {
+                "aggregate": [
+                  {"op": "mean", "field": "Score", "as": "averageScore"}
+                ],
+                "groupby": ["States"]
+              }
+            ]
+          },
+          {
+            "width": 500,
+            "height": 300,
+            "layer": [
+              
+              {
+                "data": {
+                  "url": "https://raw.githubusercontent.com/littlewhitecatdoge/Worldwide_Happiness_Report-data-visualation/littlewhitecatdoge/data/worlmap-110.json",
+                  "format": {"type": "topojson", "feature": "countries"}
+                },
+                "mark": {
+                  "type": "geoshape",
+                  "fill": "lightgray",
+                  "stroke": "white"
+                },
+                "projection": {"type":"equalEarth"}
+              },
+              {
+                "mark": {"type": "geoshape", "stroke": "black", "tooltip": true},
+                "params": [
+                  {
+                    "name": "vyear",
+                    "value": [{"year": 2015}],
+                    "select": {"type": "point", "fields": ["year"]},
+                    "bind": {
+                      "name": "Year",
+                      "input": "range",
+                      "min": 2015,
+                      "max": 2019,
+                      "step": 1
+                    }
+                  }
+                ],
+                "projection": {"type": "equalEarth"},
+                "encoding": {
+                  "shape": {"field": "geo", "type": "geojson"},
+                  "color": {
+                    "field": "Score",
+                    "type": "quantitative",
+                    "scale": {
+                      "scheme": "greens",
+                      "reverse": true,
+                      "domain": [2.6, 7.8]
+                    }
+                  },
+                  "tooltip": [
+                    {"field": "Country or region"},
+                    {"field": "Score"},
+                    {"field": "Rank"},
+                    {"field": "year"}
+                  ]
+                },
+                "transform": [
+                  {"filter": {"param": "vyear"}},
+                  {"filter": {"param": "point"}},
+                  {"filter": {"field": "year", "range": [2015, 2019]}},
+                  {
+                    "lookup": "Country or region",
+                    "from": {
+                      "data": {
+                        "url": "https://raw.githubusercontent.com/littlewhitecatdoge/Worldwide_Happiness_Report-data-visualation/littlewhitecatdoge/data/worlmap-110.json",
+                        "format": {"type": "topojson", "feature": "countries"}
+                      },
+                      "key": "properties.name"
+                    },
+                    "as": "geo"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "mark": {"type": "bar", "tooltip": true,"width":10},
+        "width": 650,
+        "height":100,
+        "encoding": {
+          "x": {"title": "Score", "field": "bin_Score", "bin": {"binned": true}},
+          "x2": {"field": "bin_Score_end"},
+          "y": {"title": "count", "field": "Count", "type": "quantitative","scale":{"domain":[0,32]}}
+        },
+        "transform": [
+          {"filter": {"param": "vyear"}},
+          {"filter": {"param": "point"}},
+          {"bin": true, "field": "Score", "as": "bin_Score"},
+          {
+            "aggregate": [{"op": "count", "as": "Count"}],
+            "groupby": ["bin_Score", "bin_Score_end"]
+          },
+          {
+            "joinaggregate": [{"op": "sum", "field": "Count", "as": "TotalCount"}]
+          },
+          {"calculate": "datum.Count/datum.TotalCount", "as": "PercentOfTotal"}
+        ]
+      }
+    ]
+  }
