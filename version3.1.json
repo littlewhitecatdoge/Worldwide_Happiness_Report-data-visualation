@@ -1,0 +1,360 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "data": {
+    "name": "globaldata",
+    "url": "https://raw.githubusercontent.com/littlewhitecatdoge/Worldwide_Happiness_Report-data-visualation/littlewhitecatdoge/data/Wordwide_Happiness_Report_clean_data.csv",
+    "format": {"type": "csv"}
+  },
+  "hconcat": [
+    {
+      "vconcat": [
+        {
+          "width": 100,
+          "height": 150,
+          "mark": {
+            "type": "bar",
+            "stroke": "black",
+            "cursor": "pointer",
+            "tooltip": true,
+            "height": 10
+          },
+          "encoding": {
+            "y": {"field": "States", "type": "nominal", "sort": "-x"},
+            "x": {
+              "field": "averageScore",
+              "type": "quantitative",
+              "bandPosition": 1
+            },
+            "color": {
+              "condition": {
+                "param": "point",
+                "field": "averageScore",
+                "type": "nominal",
+                "scale": {"scheme": "greens"},
+                "legend": null
+              },
+              "value": "grey"
+            },
+            "fillOpacity": {
+              "condition": {"param": "select1", "value": 1},
+              "value": 0.3
+            },
+            "strokeWidth": {
+              "condition": [
+                {"param": "select1", "empty": false, "value": 2},
+                {"param": "highlight1", "empty": false, "value": 1}
+              ],
+              "value": 0
+            }
+          },
+          "params": [
+            {
+              "name": "point",
+              "select": {
+                "type": "point",
+                "encodings": ["y"],
+                "resolve": "global"
+              }
+            },
+            {
+              "name": "highlight1",
+              "select": {"type": "point", "on": "mouseover"}
+            },
+            {"name": "select1", "select": "point"}
+          ],
+          "transform": [
+            {"filter": {"param": "vyear"}},
+            {"filter": {"param": "Vscore"}},
+            {
+              "aggregate": [
+                {"op": "mean", "field": "Score", "as": "averageScore"}
+              ],
+              "groupby": ["States"]
+            }
+          ]
+        },
+        {
+          "width": 400,
+          "height": 450,
+          "mark": "point",
+          "encoding": {
+            "x": {"field": "Health", "type": "quantitative"},
+            "y": {"field": "GDP", "type": "quantitative"},
+            "color": {"field": "States", "type": "nominal"},
+            "tooltip": {"field": "Country or region", "type": "nominal"},
+            "href": {"field": "url", "type": "nominal"},
+            "size": {"field": "Score", "type": "quantitative"}
+          },
+          "transform": [{"filter": {"param": "vyear"}}]
+        }
+      ]
+    },
+    {
+      "vconcat": [
+        {
+          "width": 300,
+          "height": 300,
+          "layer": [
+            {
+              "data": {
+                "url": "https://raw.githubusercontent.com/littlewhitecatdoge/Worldwide_Happiness_Report-data-visualation/littlewhitecatdoge/data/worlmap-110.json",
+                "format": {"type": "topojson", "feature": "countries"}
+              },
+              "mark": {
+                "type": "geoshape",
+                "fill": "lightgray",
+                "stroke": "white",
+                "cursor": "pointer"
+              },
+              "projection": {"type": "equalEarth"}
+            },
+            {
+              "mark": {"type": "geoshape", "stroke": "black", "tooltip": true},
+              "params": [
+                {
+                  "name": "vyear",
+                  "value": [{"year": 2015}],
+                  "select": {"type": "point", "fields": ["year"]},
+                  "bind": {
+                    "name": "Year",
+                    "input": "range",
+                    "min": 2015,
+                    "max": 2019,
+                    "step": 1
+                  }
+                },
+                {
+                  "name": "highlight2",
+                  "select": {"type": "point", "on": "mouseover"}
+                }
+              ],
+              "projection": {"type": "equalEarth"},
+              "encoding": {
+                "strokeWidth": {
+                  "condition": [
+                    {"param": "highlight2", "empty": false, "value": 1}
+                  ],
+                  "value": 0
+                },
+                "shape": {"field": "geo", "type": "geojson"},
+                "color": {
+                  "field": "Score",
+                  "type": "quantitative",
+                  "scale": {
+                    "scheme": "greens",
+                    "reverse": true,
+                    "domain": [2.6, 7.8]
+                  }
+                },
+                "tooltip": [
+                  {"field": "Country or region"},
+                  {"field": "Score"},
+                  {"field": "Rank"},
+                  {"field": "year"}
+                ]
+              },
+              "transform": [
+                {"filter": {"param": "vyear"}},
+                {"filter": {"param": "point"}},
+                {"filter": {"field": "year", "range": [2015, 2019]}},
+                {"filter": {"param": "Vscore"}},
+                {
+                  "lookup": "Country or region",
+                  "from": {
+                    "data": {
+                      "url": "https://raw.githubusercontent.com/littlewhitecatdoge/Worldwide_Happiness_Report-data-visualation/littlewhitecatdoge/data/worlmap-110.json",
+                      "format": {"type": "topojson", "feature": "countries"}
+                    },
+                    "key": "properties.name"
+                  },
+                  "as": "geo"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "width": 400,
+          "height": 300,
+          "encoding": {
+            "x": {
+              "field": "Score",
+              "bin": {"binned": false, "step": 0.5},
+              "type": "quantitative",
+              "scale": {"domain": [2, 8]}
+            },
+            "y": {"aggregate": "count", "scale": {"domain": [0, 32]}},
+            "color": {
+              "condition": {
+                "param": "Vscore",
+                "field": "Score",
+                "scale": {"scheme": "greens", "reverse": true},
+                "legend": null
+              },
+              "value": "grey"
+            },
+            "tooltip": [{"field": "Score"}]
+          },
+          "layer": [
+            {
+              "params": [
+                {
+                  "name": "Vscore",
+                  "select": {"type": "interval", "encodings": ["x"]}
+                }
+              ],
+              "transform": [
+                {"filter": {"param": "vyear"}},
+                {"filter": {"param": "point"}},
+                {"filter": {"param": "Vscore"}}
+              ],
+              "mark": {"type": "bar", "tooltip": true}
+            },
+            {
+              "transform": [
+                {"filter": {"param": "vyear"}},
+                {"filter": {"param": "point"}}
+              ],
+              "mark": {"type": "bar"}
+            }
+          ]
+        },
+        {
+          "height": 600,
+          "width": 600,
+          "transform": [
+            {
+              "lookup": "States",
+              "from": {
+                "key": "id",
+                "fields": ["name"],
+                "data": {
+                  "values": [
+                    {"id": "EUROPE", "name": "EUROPE"},
+                    {"id": "NORTH AMERICA", "name": "NORTH AMERICA"},
+                    {"id": "SOUTH AMERICA", "name": "SOUTH AMERICA"},
+                    {"id": "ASIA", "name": "ASIA"},
+                    {"id": "AFRICA", "name": "AFRICA"},
+                    {"id": "OCEANIA", "name": "OCEANIA"}
+                  ]
+                }
+              }
+            }
+          ],
+          "encoding": {
+            "x": {
+              "field": "Health",
+              "type": "quantitative",
+              "axis": {"tickCount": 5, "title": "Health"}
+            },
+            "y": {
+              "field": "GDP",
+              "type": "quantitative",
+              "axis": {"tickCount": 5, "title": "GDP"}
+            }
+          },
+          "layer": [
+            {
+              "mark": {
+                "type": "line",
+                "size": 4,
+                "color": "lightgray",
+                "strokeCap": "round"
+              },
+              "encoding": {
+                "detail": {"field": "Country or region"},
+                "order": {"field": "year"},
+                "opacity": {
+                  "condition": {
+                    "test": {
+                      "or": [
+                        {"param": "hovered", "empty": false},
+                        {"param": "clicked", "empty": false}
+                      ]
+                    },
+                    "value": 0.8
+                  },
+                  "value": 0
+                }
+              }
+            },
+            {
+              "params": [
+                {
+                  "name": "year",
+                  "value": [{"year": 1955}],
+                  "select": {"type": "point", "fields": ["year"]}
+                },
+                {
+                  "name": "hovered",
+                  "select": {
+                    "type": "point",
+                    "fields": ["Country or region"],
+                    "toggle": false,
+                    "on": "mouseover"
+                  }
+                },
+                {
+                  "name": "clicked",
+                  "select": {"type": "point", "fields": ["Country or region"]}
+                }
+              ],
+              "transform": [{"filter": {"param": "vyear"}}],
+              "mark": "point",
+              "encoding": {
+                "color": {"field": "name", "title": "Region"},
+                "size": {"field": "Score", "type": "quantitative"}
+              }
+            },
+            {
+              "transform": [
+                {
+                  "filter": {
+                    "and": [
+                      {"param": "vyear"},
+                      {
+                        "or": [
+                          {"param": "clicked", "empty": false},
+                          {"param": "hovered", "empty": false}
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ],
+              "mark": {
+                "type": "text",
+                "yOffset": -12,
+                "fontSize": 12,
+                "fontWeight": "bold"
+              },
+              "encoding": {
+                "text": {"field": "Country or region"},
+                "color": {"field": "name", "title": "Region"}
+              }
+            },
+            {
+              "transform": [
+                {"filter": {"param": "hovered", "empty": false}},
+                {"filter": {"not": {"param": "vyear"}}}
+              ],
+              "layer": [
+                {
+                  "mark": {
+                    "type": "text",
+                    "yOffset": -12,
+                    "fontSize": 12,
+                    "color": "gray"
+                  },
+                  "encoding": {"text": {"field": "year"}}
+                },
+                {"mark": {"type": "circle", "color": "gray"}}
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "config": {}
+}
