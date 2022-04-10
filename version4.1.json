@@ -29,7 +29,8 @@
             "x": {
               "field": "averageScore",
               "type": "quantitative",
-              "bandPosition": 1
+              "bandPosition": 1,
+              "scale": {"domain": [0, 7.6]}
             },
             "color": {
               "condition": {
