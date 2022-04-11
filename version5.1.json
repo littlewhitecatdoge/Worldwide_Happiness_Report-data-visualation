@@ -52,7 +52,8 @@
                 {"param": "highlight1", "empty": false, "value": 1}
               ],
               "value": 0
-            }
+            },
+            "tooltip": [{"field": "States"}, {"field": "averageScore"}]
           },
           "params": [
             {
@@ -101,7 +102,7 @@
               },
               "value": "grey"
             },
-            "tooltip": [{"field": "Score"}]
+            "tooltip": [{"field": "Country or region"}, {"field": "Score"}]
           },
           "layer": [
             {
@@ -308,7 +309,11 @@
                   "legend": null,
                   "scale": {"domain": [3, 12]}
                 },
-                "tooltip": [{"field": "Score"}, {"field": "Rank"}]
+                "tooltip": [
+                  {"field": "States"},
+                  {"field": "Score"},
+                  {"field": "Rank"}
+                ]
               }
             }
           ]
