@@ -52,7 +52,8 @@
                 {"param": "highlight1", "empty": false, "value": 1}
               ],
               "value": 0
-            }
+            },
+            "tooltip": [{"field": "States"}, {"field": "averageScore"}]
           },
           "params": [
             {
@@ -96,12 +97,12 @@
               "condition": {
                 "param": "Vscore",
                 "field": "Score",
-                "scale": {"scheme": "greens", "reverse": true},
+                "scale": {"range": ["#1f77b4"]},
                 "legend": null
               },
               "value": "grey"
             },
-            "tooltip": [{"field": "Score"}]
+            "tooltip": [{"field": "Country or region"}, {"field": "Score"}]
           },
           "layer": [
             {
@@ -259,30 +260,6 @@
           },
           "layer": [
             {
-              "mark": {
-                "type": "line",
-                "size": 4,
-                "color": "lightgray",
-                "strokeCap": "round"
-              },
-              "encoding": {
-                "detail": {"field": "Country or region"},
-                "order": {"field": "year"},
-                "opacity": {
-                  "condition": {
-                    "test": {
-                      "or": [
-                        {"param": "hovered", "empty": false},
-                        {"param": "clicked", "empty": false}
-                      ]
-                    },
-                    "value": 0.8
-                  },
-                  "value": 0
-                }
-              }
-            },
-            {
               "params": [
                 {
                   "name": "year",
@@ -310,12 +287,12 @@
                 {"filter": {"param": "Vscore"}},
                 {"filter": {"param": "point"}}
               ],
-              "mark": "point",
+              "mark": "circle",
               "encoding": {
                 "color": {
                   "condition": {
                     "param": "brush1",
-                    "field": "name",
+                    "field": "States",
                     "title": "Region",
                     "scale": {"scheme": "category10"},
                     "legend": {
@@ -329,56 +306,15 @@
                 "size": {
                   "field": "Score",
                   "type": "quantitative",
-                  "legend": null
+                  "legend": null,
+                  "scale": {"domain": [3, 12]}
                 },
-                "tooltip": [{"field": "Score"}, {"field": "Rank"}]
+                "tooltip": [
+                  {"field": "States"},
+                  {"field": "Score"},
+                  {"field": "Rank"}
+                ]
               }
-            },
-            {
-              "transform": [
-                {
-                  "filter": {
-                    "and": [
-                      {"param": "vyear"},
-                      {"param": "Vscore"},
-                      {
-                        "or": [
-                          {"param": "clicked", "empty": false},
-                          {"param": "hovered", "empty": false}
-                        ]
-                      }
-                    ]
-                  }
-                }
-              ],
-              "mark": {
-                "type": "text",
-                "yOffset": -12,
-                "fontSize": 12,
-                "fontWeight": "bold"
-              },
-              "encoding": {
-                "text": {"field": "Country or region"},
-                "color": {"field": "name", "title": "Region"}
-              }
-            },
-            {
-              "transform": [
-                {"filter": {"param": "hovered", "empty": false}},
-                {"filter": {"not": {"param": "vyear"}}}
-              ],
-              "layer": [
-                {
-                  "mark": {
-                    "type": "text",
-                    "yOffset": -12,
-                    "fontSize": 12,
-                    "color": "gray"
-                  },
-                  "encoding": {"text": {"field": "year"}}
-                },
-                {"mark": {"type": "circle", "color": "gray"}}
-              ]
             }
           ]
         }
