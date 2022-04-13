@@ -11,12 +11,12 @@
       "fontSize": 30,
       "offset": 20
     },
-    "hconcat": [
+    "vconcat": [
       {
-        "vconcat": [
+        "hconcat": [
           {
             "width": 400,
-            "height": 300,
+            "height": 320,
             "mark": {
               "type": "bar",
               "stroke": "black",
@@ -81,57 +81,6 @@
             ]
           },
           {
-            "width": 400,
-            "height": 320,
-            "encoding": {
-              "x": {
-                "field": "Score",
-                "bin": {"binned": false, "step": 0.5},
-                "type": "quantitative",
-                "scale": {"domain": [2, 8]},
-                "title":"range of Score"
-              },
-              "y": {"aggregate": "count", "scale": {"domain": [0, 32]}},
-              "color": {
-                "condition": {
-                  "param": "Vscore",
-                  "field": "Score",
-                  "scale": {"range": ["#1f77b4"]},
-                  "legend": null
-                },
-                "value": "grey"
-              },
-              "tooltip": [{"field": "Country or region"}, {"field": "Score"}]
-            },
-            "layer": [
-              {
-                "params": [
-                  {
-                    "name": "Vscore",
-                    "select": {"type": "interval", "encodings": ["x"]}
-                  }
-                ],
-                "transform": [
-                  {"filter": {"param": "vyear"}},
-                  {"filter": {"param": "pointaverage"}},
-                  {"filter": {"param": "Vscore"}}
-                ],
-                "mark": {"type": "bar", "tooltip": true}
-              },
-              {
-                "transform": [
-                  {"filter": {"param": "vyear"}},
-                  {"filter": {"param": "pointaverage"}}
-                ],
-                "mark": {"type": "bar"}
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "vconcat": [
-          {
             "width": 650,
             "height": 350,
             "layer": [
@@ -182,7 +131,7 @@
                     "field": "Score",
                     "type": "quantitative",
                     "legend": {
-                      "orient": "left",
+                      "orient": "right",
                       "titleFontSize": 13,
                       "labelFontSize": 11
                     },
@@ -203,6 +152,7 @@
                   {"filter": {"param": "pointaverage"}},
                   {"filter": {"param": "clicked"}},
                   {"filter": {"param": "pointcountry"}},
+                  {"filter": {"param": "areaselect"}},
                   {"filter": {"field": "year", "range": [2015, 2019]}},
                   {"filter": {"param": "Vscore"}},
                   {
@@ -219,29 +169,63 @@
                 ]
               }
             ]
+          }
+        ]
+      },
+      {
+        "hconcat": [
+          {
+            "width": 400,
+            "height": 320,
+            "encoding": {
+              "x": {
+                "field": "Score",
+                "bin": {"binned": false, "step": 0.5},
+                "type": "quantitative",
+                "scale": {"domain": [2, 8]},
+                "title": "range of Score"
+              },
+              "y": {"aggregate": "count", "scale": {"domain": [0, 32]}},
+              "color": {
+                "condition": {
+                  "param": "Vscore",
+                  "field": "Score",
+                  "scale": {"range": ["#1f77b4"]},
+                  "legend": null
+                },
+                "value": "grey"
+              },
+              "tooltip": [{"field": "Country or region"}, {"field": "Score"}]
+            },
+            "layer": [
+              {
+                "params": [
+                  {
+                    "name": "Vscore",
+                    "select": {"type": "interval", "encodings": ["x"]}
+                  }
+                ],
+                "transform": [
+                  {"filter": {"param": "vyear"}},
+                  {"filter": {"param": "pointaverage"}},
+                  {"filter":{"param": "areaselect"}},
+                  {"filter": {"param": "Vscore"}}
+                ],
+                "mark": {"type": "bar", "tooltip": true}
+              },
+              {
+                "transform": [
+                  {"filter": {"param": "vyear"}},
+                  {"filter": {"param": "pointaverage"}},
+                  {"filter":{"param": "areaselect"}}
+                ],
+                "mark": {"type": "bar"}
+              }
+            ]
           },
           {
-            "height": 300,
+            "height": 320,
             "width": 600,
-            "transform": [
-              {
-                "lookup": "States",
-                "from": {
-                  "key": "id",
-                  "fields": ["name"],
-                  "data": {
-                    "values": [
-                      {"id": "EUROPE", "name": "EUROPE"},
-                      {"id": "NORTH AMERICA", "name": "NORTH AMERICA"},
-                      {"id": "SOUTH AMERICA", "name": "SOUTH AMERICA"},
-                      {"id": "ASIA", "name": "ASIA"},
-                      {"id": "AFRICA", "name": "AFRICA"},
-                      {"id": "OCEANIA", "name": "OCEANIA"}
-                    ]
-                  }
-                }
-              }
-            ],
             "encoding": {
               "y": {
                 "field": "Health",
@@ -253,62 +237,125 @@
                 "field": "GDP",
                 "type": "quantitative",
                 "axis": {"tickCount": 5, "title": "GDP"},
-                "scale": {"domain": [0, 2]}
+                "scale": {"domain": [0, 2.2]}
               },
               "size": {
                 "field": "Score",
                 "type": "quantitative",
                 "scale": {"domain": [2.5, 7.8]},
-                "legend": null
+                "legend": {"orient": "right"}
               },
-              "tooltip": [
-                {"field": "Country or region"},
-                {"field": "States"},
-                {"field": "Score"},
-                {"field": "Rank"}
-              ],
               "color": {
                 "condition": {
-                  "param": "clicked",
+                  "param": "areaselect",
                   "field": "States",
-                  "title": "Region",
-                  "scale": {"scheme": "category10"},
+                  "scale": {
+                    "range": [
+                      "#56B4E9",
+                      "#E69F00",
+                      "#009E73",
+                      "#CC79A7",
+                      "#F0E442",
+                      "#D55E00"
+                    ],
+                    "domain": [
+                      "NORTH AMERICA",
+                      "EUROPE",
+                      "SOUTH AMERICA",
+                      "ASIA",
+                      "OCEANIA",
+                      "AFRICA"
+                    ]
+                  },
                   "legend": {
-                    "orient": "top-left",
+                    "orient": "right",
                     "titleFontSize": 13,
                     "labelFontSize": 11
                   }
                 },
                 "value": "grey"
-              }
+              },
+              "opacity": {
+                    "condition": {"param": "clicked", "value": 1},
+                    "value": 0.1
+                  },
+              "tooltip": [
+                {"field": "Country or region"},
+                {"field": "States"},
+                {"field": "Score"},
+                {"field": "Rank"}
+              ]
             },
             "layer": [
               {
-                "mark": "circle",
                 "transform": [
                   {"filter": {"param": "vyear"}},
                   {"filter": {"param": "Vscore"}},
                   {"filter": {"param": "pointaverage"}},
                   {"filter": {"param": "pointcountry"}}
-                ]
+                ],
+                "mark": "circle",
+                "encoding": {
+                  "size": {
+                    "field": "Score",
+                    "type": "quantitative",
+                    "scale": {"domain": [2.5, 7.8]},
+                    "legend": null
+                  }
+                }
               },
               {
                 "params": [
                   {
                     "name": "clicked",
                     "select": {"type": "point", "fields": ["Country or region"]}
-                  }
+                  },
+                  {"name": "areaselect", "select": {"type": "interval"}}
                 ],
                 "transform": [
                   {"filter": {"param": "vyear"}},
                   {"filter": {"param": "Vscore"}},
                   {"filter": {"param": "clicked"}},
+                  {"filter": {"param": "areaselect"}},
                   {"filter": {"param": "pointaverage"}},
                   {"filter": {"param": "pointcountry"}}
                 ],
-                "mark": "circle"
+                "mark": "circle",
+                "encoding": {
+                  "color": {
+                    "condition": {
+                      "param": "areaselect",
+                      "field": "States",
+                      "scale": {
+                        "range": [
+                          "#56B4E9",
+                          "#E69F00",
+                          "#009E73",
+                          "#CC79A7",
+                          "#F0E442",
+                          "#D55E00"
+                        ],
+                        "domain": [
+                          "NORTH AMERICA",
+                          "EUROPE",
+                          "SOUTH AMERICA",
+                          "ASIA",
+                          "OCEANIA",
+                          "AFRICA"
+                        ]
+                      },
+                      "legend": null
+                    },
+                    "value": "grey"
+                  },
+                  "opacity": {
+                    "condition": {"param": "clicked", "value": 1},
+                    "value": 0.1
+                  }
+                }
               }
-            ]
+            ],
+            "resolve": {"scale": {"size": "independent", "color": "independent"}}
           }
         ]
       }
