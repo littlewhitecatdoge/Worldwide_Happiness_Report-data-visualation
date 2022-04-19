@@ -22,7 +22,7 @@
               "stroke": "black",
               "cursor": "pointer",
               "tooltip": true,
-              "height": 20
+              "height": 32
             },
             "encoding": {
               "y": {"field": "States", "type": "nominal", "sort": "-x"},
@@ -30,7 +30,8 @@
                 "field": "averageScore",
                 "type": "quantitative",
                 "bandPosition": 1,
-                "scale": {"domain": [0, 7.6]}
+                "scale": {"domain": [0, 7.6]},
+                "title": "Average Score"
               },
               "color": {
                 "condition": {
@@ -183,7 +184,7 @@
                 "bin": {"binned": false, "step": 0.5},
                 "type": "quantitative",
                 "scale": {"domain": [2, 8]},
-                "title": "range of Score"
+                "title": "Range of Score"
               },
               "y": {"aggregate": "count", "scale": {"domain": [0, 32]}},
               "color": {
@@ -360,5 +361,5 @@
         ]
       }
     ],
-    "config": {}
+    "config": {} 
   }
