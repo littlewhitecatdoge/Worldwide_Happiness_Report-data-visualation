@@ -9,7 +9,7 @@ the origin data comes from https://www.kaggle.com/datasets/unsdsn/world-happines
 
 2. https://raw.githubusercontent.com/techslides/D3-Maps/master/data/world/world-110m.json is a map dataset for displaying the worldwide map. It contains country name feature.So,I can do the map matching with this dataset.
 
-the authors are **LFX(Feixiang Liu)** (clean the data and make three pictures at present)and **Niko(Shuhao Guan)**(do the gdp, health and score relationships.)
+the authors are **LFX(Feixiang Liu)** (clean the data and make three charts)and **Niko(Shuhao Guan)**(do the gdp, health and score relationships.)
 
 At present we create four interactive pictures to observe distribution of the Worldwide Happiness Scores of countries and states.
 
