@@ -1,6 +1,6 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "data": {
+  "data": { 
     "name": "globaldata",
     "url": "https://raw.githubusercontent.com/littlewhitecatdoge/Worldwide_Happiness_Report-data-visualation/littlewhitecatdoge/data/Wordwide_Happiness_Report_clean_data.csv",
     "format": {"type": "csv"}
